@@ -1,16 +1,36 @@
 -- Crear base de datos
-CREATE DATABASE IF NOT EXISTS login_mac;
-USE login_mac;
+CREATE DATABASE IF NOT EXISTS clinica_odontologica;
+USE clinica_odontologica;
 
--- Crear tabla usuarios
-CREATE TABLE IF NOT EXISTS usuarios (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- Tabla de pacientes
+CREATE TABLE pacientes (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    dni VARCHAR(20) UNIQUE NOT NULL,
+    telefono VARCHAR(20),
+    email VARCHAR(100),
+    fecha_nacimiento DATE
 );
 
--- Insertar usuario de prueba (contraseña: password123)
-INSERT INTO usuarios (username, password, email) VALUES
-('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin@example.com');
+-- Tabla de citas
+CREATE TABLE citas (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    paciente_id INT,
+    fecha DATE NOT NULL,
+    hora TIME NOT NULL,
+    estado ENUM('pendiente', 'confirmada', 'realizada', 'cancelada') DEFAULT 'pendiente',
+    tratamiento VARCHAR(200),
+    FOREIGN KEY (paciente_id) REFERENCES pacientes(id)
+);
+
+-- Tabla de historias clínicas
+CREATE TABLE historias_clinicas (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    paciente_id INT,
+    fecha_creacion DATE,
+    diagnostico TEXT,
+    tratamiento TEXT,
+    observaciones TEXT,
+    FOREIGN KEY (paciente_id) REFERENCES pacientes(id)
+);
